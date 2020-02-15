@@ -1,22 +1,30 @@
 <template>
-<div>
-    <transition-group :name="slideDirection" tag='div' class="img-slider" id="slider">
-      <div v-for="i in [currentIndex]" :key='i'>
-        <img :src="currentImg.url" />
-      </div>
-    </transition-group>
-    <label>{{currentImg.caption}}</label>
-    <a class="prev" @click="prev" href='#'>&#10094;</a>
-    <a class="next" @click="next" href='#'>&#10095;</a>
-    <a class="next-down" @click="nextDown" href='#'>&#10095;</a>
-    <a class="prev-up" @click="prevUp" href='#'>&#10095;</a>
-</div>
+  <div class="master-wrapper">
+    <div>
+      <transition-group :name="slideDirection" tag="div" class="img-slider" id="slider">
+        <div v-for="i in [currentIndex]" :key="i">
+          <div class="imgWrapper">
+            <img class="image" :src="currentImg.url" />
+            <div @click="prevUp" class="up">&#10095;</div>
+            <div @click="nextDown" class="down">&#10095;</div>
+            <div @click="prev" class="left">&#10094;</div>
+            <div @click="next" class="right">&#10095;</div>
+          </div>
+        </div>
+      </transition-group>
+      <label>{{currentImg.caption}}</label>
+      <!-- <a class="prev" @click="prev" href="#">&#10094;</a>
+      <a class="next" @click="next" href="#">&#10095;</a>
+      <a class="next-down" @click="nextDown" href="#">&#10095;</a>
+      <a class="prev-up" @click="prevUp" href="#">&#10095;</a>-->
+    </div>
+  </div>
 </template>
 
 <script>
-import json from '../../static/data.json';
+import json from "../../static/data.json";
 export default {
-  name: 'Slider',
+  name: "Slider",
   data() {
     return {
       // images: [
@@ -29,68 +37,115 @@ export default {
       currentIndex: 0,
       slideDirection: null,
       images: json.data
+    };
+  },
+
+  mounted: function() {
+    // this.startSlide();
+    console.log(this.myJson);
+  },
+
+  methods: {
+    startSlide: function() {
+      this.timer = setInterval(this.next, 4000);
+    },
+
+    next: function() {
+      this.slideDirection = "slide-left";
+      this.currentIndex += 1;
+    },
+    prev: function() {
+      this.slideDirection = "slide-right";
+      this.currentIndex -= 1;
+      // document.getElementById("slider").style.transform = 'translate(-100%, 0)'
+    },
+    nextDown: function() {
+      this.currentIndex += 1;
+      this.slideDirection = "slide-up";
+      // document.getElementById("slider").setAttribute("enter-active-class", "slide-next-down")
+    },
+    prevUp: function() {
+      this.currentIndex -= 1;
+      this.slideDirection = "slide-down";
+      // document.getElementById("slider").setAttribute("leave-to-class", "slide-prev-up")
     }
   },
 
-  
-    mounted: function() {
-      // this.startSlide();
-      console.log(this.myJson)
-    },
-  
-    methods: {
-      startSlide: function() {
-        this.timer = setInterval(this.next, 4000);
-      },
-  
-  
-      next: function() {
-        this.slideDirection = 'slide-left';
-        this.currentIndex += 1
-      },
-      prev: function() {
-        this.slideDirection = 'slide-right';
-        this.currentIndex -= 1
-        // document.getElementById("slider").style.transform = 'translate(-100%, 0)'
-      },
-      nextDown: function() {
-        this.currentIndex +=1
-        this.slideDirection = 'slide-up'
-        // document.getElementById("slider").setAttribute("enter-active-class", "slide-next-down")
-      },
-      prevUp: function() {
-        this.currentIndex -=1
-        this.slideDirection = 'slide-down'
-        // document.getElementById("slider").setAttribute("leave-to-class", "slide-prev-up")
-      }
-    },
-  
-    computed: {
-      currentImg: function() {
-        return this.images[Math.abs(this.currentIndex) % this.images.length];
-      }
+  computed: {
+    currentImg: function() {
+      return this.images[Math.abs(this.currentIndex) % this.images.length];
     }
-  
-}
+  }
+};
 </script>
 
 <style>
+.imgWrapper {
+  width: 100vw;
+  height: 350px;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+}
+.up {
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: 500px;
+  transform: rotate(-90deg);
+}
+.down {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: 500px;
+  transform: rotate(90deg);
+}
+.left {
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: 500px;
+}
+.right {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: 500px;
+}
 .slide-left-enter-active,
 .slide-left-leave-active {
   transition: all 0.9s ease;
   overflow: hidden;
   position: absolute;
-  width:100%;
+  width: 100%;
   visibility: visible;
   opacity: 1;
 }
+
+/* .master-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
 
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: all 0.9s ease;
   overflow: hidden;
   position: absolute;
-  width:100%;
+  width: 100%;
   visibility: visible;
   opacity: 1;
 }
@@ -99,18 +154,17 @@ export default {
   transition: all 0.9s ease;
   overflow: hidden;
   position: absolute;
-  width:100%;
+  width: 100%;
   visibility: visible;
   opacity: 1;
 }
-
 
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: all 0.9s ease;
   overflow: hidden;
   position: absolute;
-  width:100%;
+  width: 100%;
   visibility: visible;
   opacity: 1;
 }
@@ -147,13 +201,8 @@ export default {
   transform: translateY(100%);
 }
 
-
-img {
-  height:250px;
-  width:50%;
-}
-
-.prev, .next {
+.prev,
+.next {
   cursor: pointer;
   position: absolute;
   top: 40%;
@@ -187,7 +236,7 @@ img {
   text-decoration: none;
   user-select: none;
   bottom: 0px;
-  transform: rotate(90deg)
+  transform: rotate(90deg);
 }
 
 .prev-up {
@@ -205,16 +254,18 @@ img {
   text-decoration: none;
   user-select: none;
   /* bottom: 0px; */
-  transform: rotate(-90deg)
+  transform: rotate(-90deg);
 }
-
 
 .prev {
   left: 0;
 }
 
 /* On hover, add a black background color with a little bit see-through */
-.prev:hover, .next:hover, .next-down:hover, .prev-up:hover {
-  background-color: rgba(0,0,0,0.9);
+.prev:hover,
+.next:hover,
+.next-down:hover,
+.prev-up:hover {
+  background-color: rgba(0, 0, 0, 0.9);
 }
 </style>
